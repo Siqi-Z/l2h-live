@@ -1,0 +1,12 @@
+/*
+ * https://github.com/michael-brade/LaTeX.js/blob/5ae9470557d8fe0b5c39c11991025a58b1e733a5/src/css/base.css#L133
+ * html += body
+ */
+html, body {
+    font-family: "Computer Modern Serif", serif;
+    font-size: var(--size);
+
+    text-align: justify;
+    line-height: var(--line-height);
+    hyphens: auto;
+}

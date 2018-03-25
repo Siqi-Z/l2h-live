@@ -1,6 +1,7 @@
 'use strict';
 import * as vscode from 'vscode'
 import * as path from 'path'
+import * as fs from 'fs'
 
 // load LaTeX.js
 // @ts-ignore
@@ -18,7 +19,15 @@ export class LivePreviewProvider implements vscode.TextDocumentContentProvider  
 
     public constructor(context: vscode.ExtensionContext) {
         this.context = context
-        this.generator = new htmlGenerator({ hyphenate: false })
+        this.generator = new htmlGenerator({
+            hyphenate: false,
+            styles: [
+                // include from correct path
+                vscode.Uri.file(path.join(this.context.extensionPath, 'node_modules', 'latex.js', 'dist', 'css/article.css')).toString(),
+                // local changes
+                vscode.Uri.file(path.join(this.context.extensionPath, 'resources/fix.css')).toString(),
+            ]
+        })
     }
 
     // implements renderer
@@ -34,10 +43,11 @@ export class LivePreviewProvider implements vscode.TextDocumentContentProvider  
             this.generator.reset()
             const dom = latexParser.parse(doc.getText(), { generator: this.generator }).dom()
 
-            // fix CSS path
-            const links = Array.from(dom.head.querySelectorAll('link')) as ({ href: string })[]
-            links.forEach(link => link.href = vscode.Uri.file(
-                path.join(this.context.extensionPath, 'node_modules', 'latex.js', 'dist', link.href)).toString())
+            // output as html
+            if (0) { // TODO: switch settings.json
+                const output = path.join(path.dirname(doc.fileName), path.basename(doc.fileName, path.extname(doc.fileName)) + '.html')
+                fs.writeFileSync(output, dom.outerHTML)
+            }
 
             // to HTML source
             return dom.outerHTML
