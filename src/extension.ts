@@ -25,8 +25,8 @@ export class LivePreviewProvider implements vscode.TextDocumentContentProvider  
             hyphenate: false,
             styles: [
                 // include from correct path
-                vscode.Uri.file(path.join(this.context.extensionPath, 'node_modules', 'latex.js', 'dist', 'css/katex.css')).toString(),
-                vscode.Uri.file(path.join(this.context.extensionPath, 'node_modules', 'latex.js', 'dist', 'css/article.css')).toString(),
+                vscode.Uri.file(path.join(this.context.extensionPath, 'node_modules', 'katex', 'dist', 'katex.min.css')).toString(),
+                vscode.Uri.file(path.join(this.context.extensionPath, 'node_modules', 'latex.js', 'dist', 'css', 'article.css')).toString(),
                 // local changes
                 vscode.Uri.file(path.join(this.context.extensionPath, 'resources/fix.css')).toString(),
             ]
@@ -51,7 +51,7 @@ export class LivePreviewProvider implements vscode.TextDocumentContentProvider  
             const dom = latexParser.parse(doc.getText(), { generator: this.generator }).dom()
 
             // output as html
-            if (0) { // TODO: switch settings.json
+            if (1) { // TODO: switch settings.json
                 const output = path.join(path.dirname(doc.fileName), path.basename(doc.fileName, path.extname(doc.fileName)) + '.html')
                 fs.writeFileSync(output, dom.outerHTML)
             }
